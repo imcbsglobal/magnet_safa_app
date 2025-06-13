@@ -60,7 +60,6 @@ class BulkSyncDataView(APIView):
         """Clear all data from a table efficiently"""
         try:
             with connection.cursor() as cursor:
-                # Disable foreign key checks temporarily for faster truncation
                 cursor.execute(f'TRUNCATE TABLE {model._meta.db_table};')
             logger.info(f"Table {model._meta.db_table} cleared successfully")
             return True
@@ -149,7 +148,7 @@ class BulkSyncDataView(APIView):
                     'error': 'No table data provided'
                 }, status=status.HTTP_400_BAD_REQUEST)
 
-            # Define sync order (important for foreign key relationships)
+            # Define sync order 
             sync_order = ['acc_users', 'personel', 'mag_subject',
                           'cce_assessmentitems', 'cce_entry']
 
