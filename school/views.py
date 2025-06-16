@@ -8,6 +8,8 @@ from rest_framework import status
 from django.conf import settings
 from .models import AccUsers
 from .protection import token_required
+from django.shortcuts import render, redirect
+
 
 # Secret key for JWT
 JWT_SECRET = settings.JWT_SECRET
@@ -18,6 +20,15 @@ JWT_EXP_DELTA_DAYS = 365
 class HealthCheckView(View):
     def get(self, request, *args, **kwargs):
         return JsonResponse({"status": "ok", "message": "School API is healthy"}, status=200)
+    
+# LOGIN PAGE RENDERING VIEW
+def login_page(request):
+    return render(request, 'school/login.html')
+
+# MARK VIEW PAGE RENDERING VIEW
+def mark_view_page(request):
+    return render(request, 'school/mark_view.html')
+
 
 # LOGIN VIEW
 @api_view(['POST'])

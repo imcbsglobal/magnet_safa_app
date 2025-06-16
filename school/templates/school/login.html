@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login-page</title>
+    <!-- GOOGLE FONT IMPORT -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <!-- FONT AWSEOME IMPORT -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- STYLES IMPORT -->
+    <link rel="stylesheet" href="{% static 'school/css/styles.css' %}" />
+  </head>
+  <body>
+    <div class="container" id="login-container">
+      <h2>Login</h2>
+      <form id="loginForm">
+        <!-- USERNAME -->
+        <input type="text" id="userId" placeholder="User ID" required />
+        <!-- PASSWORD -->
+        <div class="input-group">
+          <input
+            type="password"
+            id="password"
+            placeholder="Password"
+            required
+          />
+          <span class="eye-icon" id="togglePassword">
+            <i class="fa-solid fa-eye" id="toggleIcon"></i>
+          </span>
+        </div>
+        <button type="submit">Login</button>
+        <p class="error" id="loginError"></p>
+      </form>
+    </div>
+
+    <script src="{% static 'school/js/main.js' %}"></script>
+  </body>
+</html>

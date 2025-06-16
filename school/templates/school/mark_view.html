@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Marks</title>
+    <!-- GOOGLE FONT IMPORT -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <!-- STYLES IMPORT -->
+    <link rel="stylesheet" href="{% static 'school/css/styles.css' %}" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Student Marks</h2>
+      <p>Welcome, <span id="username"></span>!</p>
+      <p>More features coming here...</p>
+    </div>
+
+    <script src="{% static 'school/js/main.js' %}"></script>
+  </body>
+</html>
