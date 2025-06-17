@@ -6,9 +6,14 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
-from .models import AccUsers
+from .models import AccUsers, VCceMarks
+from rest_framework.generics import ListAPIView
+from rest_framework.views import APIView
+from .serializers import FastCceEntrySerializer
+from django.db.models import Q
+from rest_framework.pagination import PageNumberPagination
 from .protection import token_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 
 
 # Secret key for JWT
@@ -16,21 +21,20 @@ JWT_SECRET = settings.JWT_SECRET
 JWT_ALGORITHM = 'HS256'
 JWT_EXP_DELTA_DAYS = 365
 
-# HEALTH CHECK VIEW
+
 class HealthCheckView(View):
     def get(self, request, *args, **kwargs):
         return JsonResponse({"status": "ok", "message": "School API is healthy"}, status=200)
-    
-# LOGIN PAGE RENDERING VIEW
+
+
 def login_page(request):
     return render(request, 'school/login.html')
 
-# MARK VIEW PAGE RENDERING VIEW
+
 def mark_view_page(request):
     return render(request, 'school/mark_view.html')
 
 
-# LOGIN VIEW
 @api_view(['POST'])
 def login_view(request):
     user_id = request.data.get('id', '').strip()
@@ -56,3 +60,74 @@ def login_view(request):
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
 
+class FlexibleFilterPagination(PageNumberPagination):
+    page_size = 20
+    page_size_query_param = 'page_size'
+
+
+class FilteredMarksView(ListAPIView):
+    """Fast marks view - everything pre-joined in database"""
+    serializer_class = FastCceEntrySerializer
+    pagination_class = FlexibleFilterPagination
+
+    @token_required
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        filters = Q()
+        query_params = self.request.query_params
+
+        filter_map = {
+            'class_field': 'class_field',
+            'division': 'division', 
+            'subject': 'subject',
+            'term': 'term',
+            'part': 'part',
+            'assessmentitem': 'assessmentitem',
+            'admission': 'admission'
+        }
+
+        for param, field in filter_map.items():
+            value = query_params.get(param)
+            if value:
+                filters &= Q(**{field: value})
+
+        return VCceMarks.objects.filter(filters).order_by('student_name')
+
+
+class MarkFilterMetadata(APIView):
+    """Simple filter metadata - everything from one view"""
+    def get(self, request):
+        marks_qs = VCceMarks.objects.all()
+
+        # Get unique subjects with names
+        subjects_data = marks_qs.values('subject', 'subject_name').distinct().order_by('subject_name')
+        subjects = [{'code': item['subject'], 'name': item['subject_name']} 
+                   for item in subjects_data if item['subject'] and item['subject_name']]
+        
+        # Get unique assessment items with names
+        assessment_data = marks_qs.values('assessmentitem', 'assessmentitem_name').distinct().order_by('assessmentitem_name')
+        assessment_items = [{'code': item['assessmentitem'], 'name': item['assessmentitem_name']} 
+                           for item in assessment_data if item['assessmentitem'] and item['assessmentitem_name']]
+        
+        # Get unique students with names
+        students_data = marks_qs.values('admission', 'student_name').distinct().order_by('student_name')
+        students = [{'admission': item['admission'], 'name': item['student_name']} 
+                   for item in students_data if item['admission'] and item['student_name']]
+
+        # Get other filter options
+        terms = sorted([term for term in marks_qs.values_list('term', flat=True).distinct() if term])
+        divisions = sorted([div for div in marks_qs.values_list('division', flat=True).distinct() if div])
+        parts = sorted([part for part in marks_qs.values_list('part', flat=True).distinct() if part])
+        classes = sorted([cls for cls in marks_qs.values_list('class_field', flat=True).distinct() if cls])
+
+        return Response({
+            "subjects": subjects,
+            "assessment_items": assessment_items,
+            "students": students,
+            "terms": terms,
+            "divisions": divisions,
+            "parts": parts,
+            "classes": classes,
+        })

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import AccUsers, Personel, MagSubject, CceAssessmentItems, CceEntry
+from .models import AccUsers, VCceMarks
 
 
 class AccUsersSerializer(serializers.ModelSerializer):
@@ -8,25 +8,9 @@ class AccUsersSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class PersonelSerializer(serializers.ModelSerializer):
+
+class FastCceEntrySerializer(serializers.ModelSerializer):
+    """This is all you need - simple and fast"""
     class Meta:
-        model = Personel
-        fields = '__all__'
-
-
-class MagSubjectSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MagSubject
-        fields = '__all__'
-
-
-class CceAssessmentItemsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CceAssessmentItems
-        fields = '__all__'
-
-
-class CceEntrySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CceEntry
+        model = VCceMarks
         fields = '__all__'
