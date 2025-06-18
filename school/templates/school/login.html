@@ -41,6 +41,11 @@
       </form>
     </div>
 
-    <script src="{% static 'school/js/main.js' %}"></script>
+    <!-- LOADER UI -->
+    <div id="globalLoader" class="loader-overlay" style="display: none">
+      <div class="loader"></div>
+    </div>
+
+    <script src="{% static 'school/js/main.js' %}?v={{ timestamp }}"></script>
   </body>
 </html>

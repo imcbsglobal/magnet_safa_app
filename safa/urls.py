@@ -16,8 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from school.views import root_redirect_view
 
 urlpatterns = [
+    path('', root_redirect_view),  # Route route
     path('admin/', admin.site.urls),
     path('api/', include('sync.urls')),
     path('api/school/', include('school.urls')),

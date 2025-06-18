@@ -14,6 +14,7 @@ from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
 from .protection import token_required
 from django.shortcuts import render
+from django.utils.timezone import now
 
 
 # Secret key for JWT
@@ -21,18 +22,22 @@ JWT_SECRET = settings.JWT_SECRET
 JWT_ALGORITHM = 'HS256'
 JWT_EXP_DELTA_DAYS = 365
 
-
+# HEALTH CHECK VIEW
 class HealthCheckView(View):
     def get(self, request, *args, **kwargs):
         return JsonResponse({"status": "ok", "message": "School API is healthy"}, status=200)
 
+# ROOT VIEW TO SHOW PAGES
+def root_redirect_view(request):
+    return render(request, 'school/login.html',  {'timestamp': now().timestamp()})
 
+# LOGIN PAGE VIEW
 def login_page(request):
-    return render(request, 'school/login.html')
+    return render(request, 'school/login.html',  {'timestamp': now().timestamp()})
 
-
+# MARK PAGE VIEW
 def mark_view_page(request):
-    return render(request, 'school/mark_view.html')
+    return render(request, 'school/mark_view.html', {'timestamp': now().timestamp()})
 
 
 @api_view(['POST'])

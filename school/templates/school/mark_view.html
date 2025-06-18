@@ -1,24 +1,170 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <title>Marks</title>
+    <title>Mark Viewer</title>
     <!-- GOOGLE FONT IMPORT -->
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
+    <!-- FONT AWSEOME IMPORT -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <!-- STYLES IMPORT -->
+    <!-- BASE STYLES -->
     <link rel="stylesheet" href="{% static 'school/css/styles.css' %}" />
+    <!-- MARK VIEW SPECIFIC STYLES -->
+    <link rel="stylesheet" href="{% static 'school/css/mark-view.css' %}" />
+    <!-- SELECT2 CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <div class="container">
-      <h2>Student Marks</h2>
-      <p>Welcome, <span id="username"></span>!</p>
-      <p>More features coming here...</p>
+    <div class="container" id="marks-container">
+      <div class="header">
+        <h2>Marks View</h2>
+        <div class="header-right">
+          <span id="username" class="username-display"></span>
+          <button id="logoutBtn" title="Logout" class="logout-btn">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Filters Section -->
+      <div class="filters">
+        <div class="filter-group">
+          <div class="filter-item">
+            <label for="class_field">Class:</label>
+            <select id="class_field" class="select2">
+              <option value="">All</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="division">Division:</label>
+            <select id="division" class="select2">
+              <option value="">All</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="admission">Student:</label>
+            <select id="admission" class="select2">
+              <option value="">All</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="subject">Subject:</label>
+            <select id="subject" class="select2">
+              <option value="">All</option>
+            </select>
+          </div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-item">
+            <label for="term">Term:</label>
+            <select id="term" class="select2">
+              <option value="">All</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="part">Part:</label>
+            <select id="part" class="select2">
+              <option value="">All</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="assessmentitem">Assessment Item:</label>
+            <select id="assessmentitem" class="select2">
+              <option value="">All</option>
+            </select>
+          </div>
+          <div class="filter-buttons">
+            <button id="applyFilters">Apply</button>
+            <button id="resetFilters">Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Section -->
+      <div class="table-responsive">
+        <table class="marks-table">
+          <thead>
+            <tr>
+              <th>Admission No</th>
+              <th>Student Name</th>
+              <th>Class</th>
+              <th>Division</th>
+              <th>Subject</th>
+              <th>Term</th>
+              <th>Part</th>
+              <th>Assessment</th>
+              <th>Grade</th>
+              <th>Max Marks</th>
+            </tr>
+          </thead>
+          <tbody id="marksTableBody">
+            <!-- Data will be populated via JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination Section -->
+      <div class="pagination-container">
+        <div class="pagination-info">
+          <span id="recordsInfo">Showing 0 - 0 of 0 records</span>
+          <div class="page-size-selector">
+            <label for="pageSize">Show:</label>
+            <select id="pageSize">
+              <option value="10">10</option>
+              <option value="20" selected>20</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </div>
+        </div>
+        <div class="pagination-controls">
+          <button class="pagination-btn" id="firstPage" title="First Page">
+            <i class="fa-solid fa-angles-left"></i>
+          </button>
+          <button class="pagination-btn" id="prevPage" title="Previous">
+            <i class="fa-solid fa-angle-left"></i>
+          </button>
+          <div class="page-input-container">
+            <span>Page</span>
+            <input
+              type="number"
+              id="currentPageInput"
+              class="page-input"
+              value="1"
+              min="1"
+            />
+            <span> of <span id="totalPages">1</span></span>
+          </div>
+          <button class="pagination-btn" id="nextPage" title="Next">
+            <i class="fa-solid fa-angle-right"></i>
+          </button>
+          <button class="pagination-btn" id="lastPage" title="Last Page">
+            <i class="fa-solid fa-angles-right"></i>
+          </button>
+        </div>
+      </div>
     </div>
 
-    <script src="{% static 'school/js/main.js' %}"></script>
+    <!-- LOADER UI -->
+    <div id="globalLoader" class="loader-overlay" style="display: none">
+      <div class="loader"></div>
+    </div>
+
+    <!-- JQUERY (REQUIRED FOR SELECT2) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- SELECT2 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+    <!-- SCRIPT.js IMPORT -->
+    <script src="{% static 'school/js/main.js' %}?v={{ timestamp }}"></script>
   </body>
 </html>
