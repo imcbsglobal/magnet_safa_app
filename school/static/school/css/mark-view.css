@@ -489,6 +489,19 @@ button:active {
   background-color: var(--table-mark-row-color);
 }
 
+/* TABLE ROW HOVER COLORS */
+.marks-table tbody tr:hover td:first-child {
+  background-color: #fff5f5; /* lightened version */
+}
+
+.marks-table tbody tr:hover td:nth-child(2) {
+  background-color: #fff9db;
+}
+
+.marks-table tbody tr:hover td:nth-child(11) {
+  background-color: #ebfbee;
+}
+
 /* ========== EDITABLE MARK VISUAL FEEDBACK ========== */
 .editable-mark {
   background-color: #e8f4fd !important;
