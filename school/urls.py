@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import login_view, HealthCheckView, login_page, mark_view_page, FilteredMarksView, MarkFilterMetadata
+from .views import login_view, HealthCheckView, login_page, mark_view_page, FilteredMarksView, MarkFilterMetadata, UpdateMarkView
 
 urlpatterns = [
     path('health/', HealthCheckView.as_view(), name='health-check'),
@@ -8,4 +8,5 @@ urlpatterns = [
     path('mark-view/', mark_view_page, name='mark-view'),
     path('marks/', FilteredMarksView.as_view(), name='filtered-marks'),
     path('filters/', MarkFilterMetadata.as_view(), name='filter-metadata'),
+    path('update-mark/', UpdateMarkView.as_view(), name='update-mark'),
 ]

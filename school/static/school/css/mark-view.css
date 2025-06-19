@@ -471,9 +471,180 @@ button:active {
 }
 
 /* Grade styling */
-.marks-table td:nth-child(9) {
+.marks-table tbody tr td:nth-child(11) {
   font-weight: 600;
   color: var(--success-color);
+}
+
+/* ========== EDITABLE MARK VISUAL FEEDBACK ========== */
+.editable-mark {
+  background-color: #e8f4fd !important;
+  border: 2px dashed #2c7be5 !important;
+  cursor: pointer !important;
+  position: relative;
+  transition: all 0.2s ease !important;
+  font-weight: 600 !important;
+  color: #1b66c9 !important;
+  border-radius: 4px !important;
+  text-align: center !important;
+}
+
+.editable-mark:hover {
+  background-color: #d1ecf1 !important;
+  border-color: #1b66c9 !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 2px 8px rgba(44, 123, 229, 0.3) !important;
+}
+
+/* Edit icon */
+.editable-mark::after {
+  content: "✏️";
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  font-size: 8px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.editable-mark:hover::after {
+  opacity: 1;
+}
+
+/* Tooltip */
+.editable-mark::before {
+  content: "Double-click to edit";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 1000;
+  margin-bottom: 5px;
+}
+
+.editable-mark:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ========== MARK-ENTRY POPUP STYLES ========== */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(2px);
+}
+
+.popup-box {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  transform: scale(0.9);
+  animation: popupIn 0.2s ease-out forwards;
+}
+
+@keyframes popupIn {
+  to {
+    transform: scale(1);
+  }
+}
+
+.popup-box h3 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  text-align: center;
+}
+
+.popup-box p {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  font-size: var(--font-size-small);
+}
+
+.popup-box p strong {
+  color: var(--primary-color);
+  min-width: 100px;
+  display: inline-block;
+}
+
+.popup-box label {
+  display: block;
+  margin: 1rem 0 0.5rem 0;
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+.popup-box input {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+}
+
+.popup-box input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(44, 123, 229, 0.1);
+  outline: none;
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.popup-buttons button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  border: none;
+  transition: var(--transition);
+}
+
+#popupSaveBtn {
+  background-color: var(--success-color);
+  color: white;
+}
+
+#popupSaveBtn:hover {
+  background-color: #43a047;
+}
+
+#popupCancelBtn {
+  background-color: #6c757d;
+  color: white;
+}
+
+#popupCancelBtn:hover {
+  background-color: #5a6268;
 }
 
 /* ========== RESPONSIVE DESIGN ========== */

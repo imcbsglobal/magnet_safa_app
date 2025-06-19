@@ -15,6 +15,7 @@ from rest_framework.pagination import PageNumberPagination
 from .protection import token_required
 from django.shortcuts import render
 from django.utils.timezone import now
+from .models import CCEEntry
 
 
 # Secret key for JWT
@@ -136,3 +137,34 @@ class MarkFilterMetadata(APIView):
             "parts": parts,
             "classes": classes,
         })
+    
+# UPDATE MARK VIEW
+class UpdateMarkView(APIView):
+
+    @token_required
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+    def post(self, request):
+        slno = request.data.get("slno")
+        mark = request.data.get("mark")
+
+        if slno is None or mark is None:
+            return Response({"error": "Missing slno or mark"}, status=400)
+
+        try:
+            entry = CCEEntry.objects.get(slno=slno)
+        except CCEEntry.DoesNotExist:
+            return Response({"error": "Entry not found"}, status=404)
+
+        try:
+            mark = float(mark)
+        except ValueError:
+            return Response({"error": "Invalid mark format"}, status=400)
+
+        if mark < 0 or (entry.maxmark is not None and mark > float(entry.maxmark)):
+            return Response({"error": f"Mark must be between 0 and {entry.maxmark}"}, status=400)
+
+        entry.mark = mark
+        entry.save(update_fields=["mark"])
+
+        return Response({"message": "Mark updated successfully"})

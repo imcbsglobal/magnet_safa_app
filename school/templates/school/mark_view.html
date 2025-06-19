@@ -15,9 +15,15 @@
     />
     <!-- STYLES IMPORT -->
     <!-- BASE STYLES -->
-    <link rel="stylesheet" href="{% static 'school/css/styles.css' %}" />
+    <link
+      rel="stylesheet"
+      href="{% static 'school/css/style.css' %}?v={{ timestamp }}"
+    />
     <!-- MARK VIEW SPECIFIC STYLES -->
-    <link rel="stylesheet" href="{% static 'school/css/mark-view.css' %}" />
+    <link
+      rel="stylesheet"
+      href="{% static 'school/css/mark-view.css' %}?v={{ timestamp }}"
+    />
     <!-- SELECT2 CSS -->
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css"
@@ -103,6 +109,7 @@
               <th>Term</th>
               <th>Part</th>
               <th>Assessment</th>
+              <th>Marks</th>
               <th>Grade</th>
               <th>Max Marks</th>
             </tr>
@@ -151,6 +158,29 @@
           <button class="pagination-btn" id="lastPage" title="Last Page">
             <i class="fa-solid fa-angles-right"></i>
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MARK-ENTRY POPUP -->
+    <div id="markPopup" class="popup-overlay" style="display: none">
+      <div class="popup-box">
+        <h3>Update Mark</h3>
+        <p><strong>Student:</strong> <span id="popupStudent"></span></p>
+        <p><strong>Subject:</strong> <span id="popupSubject"></span></p>
+        <p><strong>Class:</strong> <span id="popupClass"></span></p>
+        <p><strong>Division:</strong> <span id="popupDivision"></span></p>
+        <p><strong>Term:</strong> <span id="popupTerm"></span></p>
+        <p><strong>Part:</strong> <span id="popupPart"></span></p>
+        <p><strong>Assessment:</strong> <span id="popupAssessment"></span></p>
+        <p><strong>Max Marks:</strong> <span id="popupMax"></span></p>
+
+        <label for="popupMarkInput">Enter Mark:</label>
+        <input type="number" id="popupMarkInput" min="0" step="0.1" />
+
+        <div class="popup-buttons">
+          <button id="popupSaveBtn">Save</button>
+          <button id="popupCancelBtn">Cancel</button>
         </div>
       </div>
     </div>

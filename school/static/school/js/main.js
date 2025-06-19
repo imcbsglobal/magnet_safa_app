@@ -222,6 +222,15 @@ document.addEventListener("DOMContentLoaded", () => {
           <td>${m.term}</td>
           <td>${m.part}</td>
           <td>${m.assessmentitem_name}</td>
+          <td class="editable-mark" data-slno="${m.slno}" data-max="${
+          m.maxmark
+        }" data-student="${m.student_name}" data-subject="${
+          m.subject_name
+        }" data-class="${m.class_field}" data-division="${
+          m.division
+        }" data-term="${m.term}" data-part="${m.part}" data-assessment="${
+          m.assessmentitem_name
+        }">${m.mark !== null ? m.mark : 0}</td>
           <td>${m.grade}</td>
           <td>${m.maxmark}</td>
         `;
@@ -334,6 +343,78 @@ document.addEventListener("DOMContentLoaded", () => {
     if (pageSizeSelect) {
       pageSize = parseInt(pageSizeSelect.value);
     }
+
+    // SCRIPT FOR MARK-ENTRY POPUP
+    let currentSlno = null;
+    let maxMark = null;
+
+    document.addEventListener("dblclick", (e) => {
+      if (e.target.classList.contains("editable-mark")) {
+        const cell = e.target;
+        currentSlno = cell.dataset.slno;
+        maxMark = parseFloat(cell.dataset.max);
+
+        // Fill popup with data
+        document.getElementById("popupStudent").textContent =
+          cell.dataset.student;
+        document.getElementById("popupSubject").textContent =
+          cell.dataset.subject;
+        document.getElementById("popupClass").textContent = cell.dataset.class;
+        document.getElementById("popupDivision").textContent =
+          cell.dataset.division;
+        document.getElementById("popupTerm").textContent = cell.dataset.term;
+        document.getElementById("popupPart").textContent = cell.dataset.part;
+        document.getElementById("popupAssessment").textContent =
+          cell.dataset.assessment;
+        document.getElementById("popupMax").textContent = maxMark;
+
+        document.getElementById("popupMarkInput").value =
+          cell.textContent.trim();
+
+        document.getElementById("markPopup").style.display = "flex";
+      }
+    });
+
+    document.getElementById("popupCancelBtn").addEventListener("click", () => {
+      document.getElementById("markPopup").style.display = "none";
+    });
+
+    document
+      .getElementById("popupSaveBtn")
+      .addEventListener("click", async () => {
+        const newMark = parseFloat(
+          document.getElementById("popupMarkInput").value
+        );
+
+        if (isNaN(newMark) || newMark < 0 || newMark > maxMark) {
+          alert(`Mark must be between 0 and ${maxMark}`);
+          return;
+        }
+
+        try {
+          const res = await fetch("/api/school/update-mark/", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${safa_token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ slno: currentSlno, mark: newMark }),
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            alert("Mark updated successfully");
+            document.getElementById("markPopup").style.display = "none";
+            fetchMarks(currentPage); // reload data
+          } else {
+            alert(data.error || "Failed to update");
+          }
+        } catch (err) {
+          alert("Server error");
+          console.error(err);
+        }
+      });
 
     // Initialize the page
     fetchFilters();
