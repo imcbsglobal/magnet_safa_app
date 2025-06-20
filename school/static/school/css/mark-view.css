@@ -271,7 +271,7 @@ button:active {
 }
 
 #marks-container {
-  max-width: 1400px;
+  max-width: 1600px;
   padding: 1.5rem;
 }
 
@@ -473,7 +473,7 @@ button:active {
   border-bottom: none;
 }
 
-/* Grade styling */
+/* Table Grade styling */
 .marks-table tbody tr td:first-child {
   font-weight: 600;
   background-color: var(--table-admission-row-color);
@@ -487,6 +487,11 @@ button:active {
 .marks-table tbody tr td:nth-child(11) {
   font-weight: 600;
   background-color: var(--table-mark-row-color);
+  text-align: right;
+}
+
+.marks-table tbody tr td:nth-child(10) {
+  text-align: center;
 }
 
 /* TABLE ROW HOVER COLORS */
@@ -512,6 +517,7 @@ button:active {
   font-weight: 600 !important;
   color: #1b66c9 !important;
   border-radius: 4px !important;
+  text-align: right !important;
 }
 
 .editable-mark:hover {

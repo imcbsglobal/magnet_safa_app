@@ -126,8 +126,8 @@ button:hover {
 
 .error {
   color: var(--error-color);
-  font-size: var(--font-size-small);
-  margin-bottom: 0.5rem;
+  font-size: var(--font-size-base);
+  margin-top: 0.5rem;
 }
 
 /* ========== LOGIN SPECIFIC ========== */
