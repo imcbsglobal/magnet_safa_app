@@ -165,6 +165,7 @@ class UpdateMarkView(APIView):
             return Response({"error": f"Mark must be between 0 and {entry.maxmark}"}, status=400)
 
         entry.mark = mark
-        entry.save(update_fields=["mark"])
+        entry.last_updated = now() # ✅ Set timestamp manually
+        entry.save(update_fields=["mark", "last_updated"])
 
         return Response({"message": "Mark updated successfully"})

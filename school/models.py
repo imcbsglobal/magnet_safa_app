@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.timezone import now
 
 
 class AccUsers(models.Model):
@@ -50,6 +51,7 @@ class CCEEntry(models.Model):
     slno = models.DecimalField(max_digits=12, decimal_places=0, primary_key=True)
     mark = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
     maxmark = models.DecimalField(max_digits=12, decimal_places=3, null=True, blank=True)
+    last_updated = models.DateTimeField(null=True, blank=True) 
 
     class Meta:
         db_table = 'cce_entry'
