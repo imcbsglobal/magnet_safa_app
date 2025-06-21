@@ -479,6 +479,10 @@ button:active {
   background-color: var(--table-admission-row-color);
 }
 
+.marks-table thead th:nth-child(11) {
+  text-align: right;
+}
+
 .marks-table tbody tr td:nth-child(2) {
   font-weight: 600;
   background-color: var(--table-name-row-color);
