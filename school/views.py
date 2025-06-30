@@ -103,26 +103,44 @@ class FilteredMarksView(ListAPIView):
 
 
 class MarkFilterMetadata(APIView):
-    """Simple filter metadata - everything from one view"""
+    """Filter metadata with dependent student filter"""
+
     def get(self, request):
         marks_qs = VCceMarks.objects.all()
 
-        # Get unique subjects with names
-        subjects_data = marks_qs.values('subject', 'subject_name').distinct().order_by('subject_name')
-        subjects = [{'code': item['subject'], 'name': item['subject_name']} 
-                   for item in subjects_data if item['subject'] and item['subject_name']]
-        
-        # Get unique assessment items with names
-        assessment_data = marks_qs.values('assessmentitem', 'assessmentitem_name').distinct().order_by('assessmentitem_name')
-        assessment_items = [{'code': item['assessmentitem'], 'name': item['assessmentitem_name']} 
-                           for item in assessment_data if item['assessmentitem'] and item['assessmentitem_name']]
-        
-        # Get unique students with names
-        students_data = marks_qs.values('admission', 'student_name').distinct().order_by('student_name')
-        students = [{'admission': item['admission'], 'name': item['student_name']} 
-                   for item in students_data if item['admission'] and item['student_name']]
+        # 🔥 Read query params
+        class_field = request.query_params.get('class_field')
+        division = request.query_params.get('division')
 
-        # Get other filter options
+        # ✅ Filter ONLY the student queryset if class or division is selected
+        student_qs = marks_qs
+        if class_field:
+            student_qs = student_qs.filter(class_field=class_field)
+        if division:
+            student_qs = student_qs.filter(division=division)
+
+        # 📦 Subjects (Global)
+        subjects_data = marks_qs.values('subject', 'subject_name').distinct().order_by('subject_name')
+        subjects = [
+            {'code': item['subject'], 'name': item['subject_name']}
+            for item in subjects_data if item['subject'] and item['subject_name']
+        ]
+
+        # 📦 Assessment Items (Global)
+        assessment_data = marks_qs.values('assessmentitem', 'assessmentitem_name').distinct().order_by('assessmentitem_name')
+        assessment_items = [
+            {'code': item['assessmentitem'], 'name': item['assessmentitem_name']}
+            for item in assessment_data if item['assessmentitem'] and item['assessmentitem_name']
+        ]
+
+        # 📦 Students (Filtered by class & division if given)
+        students_data = student_qs.values('admission', 'student_name').distinct().order_by('student_name')
+        students = [
+            {'admission': item['admission'], 'name': item['student_name']}
+            for item in students_data if item['admission'] and item['student_name']
+        ]
+
+        # 📦 Other filters (Global)
         terms = sorted([term for term in marks_qs.values_list('term', flat=True).distinct() if term])
         divisions = sorted([div for div in marks_qs.values_list('division', flat=True).distinct() if div])
         parts = sorted([part for part in marks_qs.values_list('part', flat=True).distinct() if part])
@@ -131,12 +149,13 @@ class MarkFilterMetadata(APIView):
         return Response({
             "subjects": subjects,
             "assessment_items": assessment_items,
-            "students": students,
+            "students": students,   # ✅ Filtered students
             "terms": terms,
             "divisions": divisions,
             "parts": parts,
             "classes": classes,
         })
+
     
 # UPDATE MARK VIEW
 class UpdateMarkView(APIView):
