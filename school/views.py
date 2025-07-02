@@ -139,6 +139,7 @@ class MarkFilterMetadata(APIView):
             {'admission': item['admission'], 'name': item['student_name']}
             for item in students_data if item['admission'] and item['student_name']
         ]
+        student_count = student_qs.values('admission').distinct().count()
 
         # 📦 Other filters (Global)
         terms = sorted([term for term in marks_qs.values_list('term', flat=True).distinct() if term])
@@ -150,6 +151,7 @@ class MarkFilterMetadata(APIView):
             "subjects": subjects,
             "assessment_items": assessment_items,
             "students": students,   # ✅ Filtered students
+            "student_count": student_count,
             "terms": terms,
             "divisions": divisions,
             "parts": parts,
