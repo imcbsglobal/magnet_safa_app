@@ -190,3 +190,54 @@ class UpdateMarkView(APIView):
         entry.save(update_fields=["mark", "last_updated"])
 
         return Response({"message": "Mark updated successfully"})
+
+
+# BULK UPDATE MARK VIEW
+class BulkUpdateMarkView(APIView):
+
+    @token_required
+    def patch(self, request):
+        updates = request.data  # Expecting list of { "slno": ..., "mark": ... }
+
+        if not isinstance(updates, list):
+            return Response({"error": "Expected a list of updates"}, status=400)
+
+        results = []
+
+        for item in updates:
+            slno = item.get("slno")
+            mark = item.get("mark")
+
+            if slno is None or mark is None:
+                results.append({"slno": slno, "status": "failed", "error": "Missing slno or mark"})
+                continue
+
+            try:
+                entry = CCEEntry.objects.get(slno=slno)
+            except CCEEntry.DoesNotExist:
+                results.append({"slno": slno, "status": "failed", "error": "Entry not found"})
+                continue
+
+            try:
+                mark = float(mark)
+            except ValueError:
+                results.append({"slno": slno, "status": "failed", "error": "Invalid mark format"})
+                continue
+
+            if mark < 0 or (entry.maxmark is not None and mark > float(entry.maxmark)):
+                results.append({
+                    "slno": slno,
+                    "status": "failed",
+                    "error": f"Mark must be between 0 and {entry.maxmark}"
+                })
+                continue
+
+            entry.mark = mark
+            entry.last_updated = now()
+            entry.save(update_fields=["mark", "last_updated"])
+
+            results.append({"slno": slno, "status": "success", "last_updated": entry.last_updated.isoformat()})
+
+        return Response({"results": results}, status=207)
+
+
