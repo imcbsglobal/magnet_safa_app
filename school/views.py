@@ -89,9 +89,10 @@ class FilteredMarksView(ListAPIView):
             'division': 'division', 
             'subject': 'subject',
             'term': 'term',
-            'part': 'part',
+            'subperiod': 'subperiod',
             'assessmentitem': 'assessmentitem',
             'admission': 'admission'
+            # 'part': 'part',
         }
 
         for param, field in filter_map.items():
@@ -144,7 +145,8 @@ class MarkFilterMetadata(APIView):
         # 📦 Other filters (Global)
         terms = sorted([term for term in marks_qs.values_list('term', flat=True).distinct() if term])
         divisions = sorted([div for div in marks_qs.values_list('division', flat=True).distinct() if div])
-        parts = sorted([part for part in marks_qs.values_list('part', flat=True).distinct() if part])
+        # parts = sorted([part for part in marks_qs.values_list('part', flat=True).distinct() if part])
+        subperiods = sorted([sp for sp in marks_qs.values_list('subperiod', flat=True).distinct() if sp])
         classes = sorted([cls for cls in marks_qs.values_list('class_field', flat=True).distinct() if cls])
 
         return Response({
@@ -154,8 +156,9 @@ class MarkFilterMetadata(APIView):
             "student_count": student_count,
             "terms": terms,
             "divisions": divisions,
-            "parts": parts,
+            "subperiods": subperiods,
             "classes": classes,
+            # "parts": parts,
         })
 
     
